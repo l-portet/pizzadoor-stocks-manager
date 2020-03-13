@@ -1,7 +1,7 @@
 const pup = require('puppeteer');
 
 async function setup() {
-  const browser = await pup.launch({ headless: false, args: ['--no-sandbox'] });
+  const browser = await pup.launch({ headless: true, args: ['--no-sandbox'] });
   const page = await browser.newPage();
 
   page.on('console', consoleObj => console.log(consoleObj.text()));

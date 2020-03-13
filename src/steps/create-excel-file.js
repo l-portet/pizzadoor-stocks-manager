@@ -6,7 +6,6 @@ async function createExcelFile(inventories) {
 
   addRowsInWorksheet(inventories, worksheet, rows);
 
-  console.log(worksheet.getRow(1).values);
   applyClassStyle(worksheet.getRow(1), 'title');
 
   await workbook.xlsx.writeFile('export.xlsx');
@@ -96,21 +95,7 @@ function addRowsInWorksheet(inventories, worksheet, rows) {
 
     applyClassStyle(worksheetRow, row.class);
   }
-  // addTotalRow(inventories, worksheet, total)
 }
-
-// function addTotalRow(inventories, worksheet, total) {
-//   let totalRow = {};
-//   // totalRow = worksheet.addRow({ 'total-qty': total });
-//   // applyClassStyle(totalRow, 'title')
-//   for (let inventory of inventories) {
-//     for (let prop in inventory.data) {
-//       let category = inventory.data[prop];
-//
-//     }
-//   }
-//
-// }
 
 function applyClassStyle(row, className) {
   const classes = {

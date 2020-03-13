@@ -6,6 +6,7 @@ const CronJob = require('cron').CronJob;
 const pizzaTypes = require('../pizza-types.json');
 
 const setup = require('./setup');
+const close = require('./close');
 const steps = require('./steps');
 
 async function run() {
@@ -27,7 +28,6 @@ async function run() {
     let inventory = await steps.extractCurrentInventory(url);
 
     inventories.push({ name: info.name, data: inventory });
-    console.log(inventory);
   }
   inventories = steps.uniformInventories(inventories);
 
@@ -38,6 +38,7 @@ async function run() {
 
   await steps.sendMail(fileBuffer.toString('base64'));
   fs.writeFileSync('./inventories.json', JSON.stringify(inventories));
+  await close();
 }
 
 new CronJob(

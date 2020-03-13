@@ -53,7 +53,6 @@ function formatItems(items) {
     if (!results[item.name]) results[item.name] = 0;
     results[item.name]++;
   }
-  console.log(results)
   return results;
 }
 
