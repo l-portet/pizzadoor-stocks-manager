@@ -40,18 +40,13 @@ async function run() {
   fs.writeFileSync('./inventories.json', JSON.stringify(inventories));
 }
 
-run();
-// (async function() {
-//   await steps.createExcelFile(require('../inventories.json'));
-// })();
-
-// new CronJob(
-//   '0 8 * * *',
-//   async function() {
-//     console.log(`Cron restarted ${new Date()}`);
-//     await run();
-//   },
-//   null,
-//   true,
-//   'Europe/Paris'
-// );
+new CronJob(
+  '0 7 * * *',
+  async function() {
+    console.log(`Cron restarted ${new Date()}`);
+    await run();
+  },
+  null,
+  true,
+  'Europe/Paris'
+);
