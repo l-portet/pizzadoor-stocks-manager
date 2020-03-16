@@ -1,2 +1,5 @@
 node_modules
 .env
+inventories.json
+export.xlsx
+.DS_Store
