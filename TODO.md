@@ -1,0 +1,9 @@
+# Todo
+
+- Write docs (README + sample config file)
+- Set a `fillPercentage` by atm's pizza type
+- Fix mail config (on sender)
+- Enhance scraper features?
+- Set scraper as independent entity
+- Excel export style needs to be polished and standardized
+- Rewrite some parts of exports/excel
