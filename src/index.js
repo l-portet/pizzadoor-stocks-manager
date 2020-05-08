@@ -1,53 +1,54 @@
 require('dotenv').config();
-const fs = require('fs');
-const pup = require('puppeteer');
-const CronJob = require('cron').CronJob;
+require('./config');
 
-const pizzaTypes = require('../pizza-types.json');
+const deepmerge = require('deepmerge');
+const Scraper = require('./scraper');
+const manageInventories = require('./inventory');
+const exportAs = require('./export');
 
-const setup = require('./setup');
-const close = require('./close');
-const steps = require('./steps');
+class PizzadoorStocksManager {
+  constructor(config) {
+    this.scraper = new Scraper();
+    this.atms = [];
 
-async function run() {
-  const { browser, page } = await setup();
-  let infos = [];
-  let inventories = [];
-  let total = {};
-  let fileBuffer;
+    if (config) {
+      _shared.config = deepmerge(_shared.config, config);
+    }
 
-  global.browser = browser;
-  global.page = page;
-
-  await page.goto('https://www.mypizzadoor.com/');
-  await steps.login(process.env.ADIAL_USERNAME, process.env.ADIAL_PASSWORD);
-  infos = await steps.getAtmInfos();
-
-  for (let info of infos) {
-    let url = await steps.getDirectUrl(info.link);
-    let inventory = await steps.extractCurrentInventory(url);
-
-    inventories.push({ name: info.name, data: inventory });
+    this.config = _shared.config;
   }
-  inventories = steps.uniformInventories(inventories);
 
-  total = steps.mergeInventories(inventories);
-  inventories.push(total);
-  inventories = steps.setPizzaTypes(inventories, pizzaTypes);
-  fileBuffer = await steps.createExcelFile(inventories);
+  getAtmsData() {
+    return this.atms;
+  }
 
-  await steps.sendMail(fileBuffer.toString('base64'));
-  fs.writeFileSync('./inventories.json', JSON.stringify(inventories));
-  await close();
+  async fetchAtmsData() {
+    await this.scraper.init();
+    await this.scraper.run();
+    this.atms = this.scraper.getAtms();
+    await this.scraper.close();
+
+    return this;
+  }
+
+  manageInventories() {
+    return manageInventories(this.atms);
+  }
+
+  async exportAsExcel() {
+    return exportAs.excel(this.atms);
+  }
+
+  async exportAsMail(
+    attachmentContent,
+    mailReceiver = this.config.exports.mailReceiver
+  ) {
+    await exportAs.mail(
+      process.env.SENDGRID_APIKEY,
+      this.config.exports.mailReceiver,
+      attachmentContent
+    );
+  }
 }
 
-new CronJob(
-  '0 7 * * *',
-  async function() {
-    console.log(`Cron restarted ${new Date()}`);
-    await run();
-  },
-  null,
-  true,
-  'Europe/Paris'
-);
+module.exports = PizzadoorStocksManager;

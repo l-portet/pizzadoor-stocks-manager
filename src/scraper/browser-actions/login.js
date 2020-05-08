@@ -1,4 +1,6 @@
 async function login(username, password) {
+  const { page } = _shared;
+
   await page.focus('#user_login')
   await page.keyboard.type(username);
   await page.focus('#user_password')

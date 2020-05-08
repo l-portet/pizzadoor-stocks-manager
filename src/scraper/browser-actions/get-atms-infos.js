@@ -1,4 +1,7 @@
+
 async function getAtmInfos() {
+  const { page } = _shared;
+
   let { names, links } = await page.$$eval(
     'a.list-group-item.daplink',
     links => {

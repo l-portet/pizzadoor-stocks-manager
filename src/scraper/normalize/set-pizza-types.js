@@ -1,29 +1,33 @@
-function setPizzaTypes(inventories, pizzaTypes) {
-  for (let inventory of inventories) {
-    let data = [];
-    for (let prop in inventory.data) {
-      data.push(findPizzaType(pizzaTypes, prop, inventory.data[prop]));
+function setPizzaTypes(atms, pizzaTypes) {
+
+  atms = atms.map(atm => {
+    let inventory = [];
+
+    for (let prop in atm.inventory) {
+      inventory.push(findPizzaType(pizzaTypes, prop, atm.inventory[prop]));
     }
-    inventory.data = sortByPizzaName(data);
-    inventory.data = groupByPizzaType(inventory.data)
-  }
-  return inventories;
+    atm.inventory = sortByPizzaName(inventory);
+    // atm.inventory = groupByPizzaType(atm.inventory)
+    return atm;
+  })
+  return atms;
 }
 
 function findPizzaType(pizzaTypes, name, value) {
+  // Remove special accents
   let normalizedName = name.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 
   normalizedName = normalizedName.toLowerCase();
 
   for (let prop in pizzaTypes) {
     if (pizzaTypes[prop].includes(normalizedName))
-      return { name, qty: value, type: prop };
+      return { name, stocks: value, type: prop };
   }
-  return { name, qty: value, type: 'other' };
+  return { name, stocks: value, type: 'other' };
 }
 
-function sortByPizzaName(inventory) {
-  return inventory.sort((a, b) => {
+function sortByPizzaName(atm) {
+  return atm.sort((a, b) => {
     let res = 0;
 
     res = checkType(a, b);
@@ -69,7 +73,7 @@ function checkName(a, b) {
   }
   return 0;
 }
-
+/* TEMP TODO MAYBE NOT USE */
 function groupByPizzaType(inventory) {
   let result = {};
 
@@ -81,5 +85,6 @@ function groupByPizzaType(inventory) {
 
   return result;
 }
+/* TEMP TODO MAYBE NOT USE */
 
 module.exports = setPizzaTypes;
