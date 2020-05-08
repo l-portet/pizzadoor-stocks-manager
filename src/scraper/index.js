@@ -60,11 +60,3 @@ class Scraper {
 }
 
 module.exports = Scraper;
-
-// async function run() {
-//
-//   fileBuffer = await browserActions.createExcelFile(inventories);
-//
-//   await browserActions.sendMail(fileBuffer.toString('base64'));
-//   fs.writeFileSync('./inventories.json', JSON.stringify(inventories));
-// }
