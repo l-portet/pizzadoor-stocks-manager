@@ -3,6 +3,7 @@
 
 ## Installation
 > Note that we use this adress in this example: `git+https://github.com/l-portet/pizzadoor-stocks-manager.git`. But consider it might change upon next versions.
+
 Add this line in the package.json:
 ```javascript
   "dependencies": {
