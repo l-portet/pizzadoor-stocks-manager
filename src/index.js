@@ -9,7 +9,7 @@ class PizzadoorStocksManager {
   constructor(config, credentials) {
 
     if (config) {
-      _shared.config = deepmerge(_shared.config, config);
+      this.setConfig(config)
     }
 
     if (credentials) {
@@ -21,7 +21,7 @@ class PizzadoorStocksManager {
 
     this.config = _shared.config;
   }
-  
+
   async fetchAndManage() {
     await this.fetchAtmsData();
     this.manageInventories();
@@ -52,14 +52,21 @@ class PizzadoorStocksManager {
 
   async exportAsMail(
     attachmentContent,
+    mailSender = this.config.exports.mailSender,
     mailReceiver = this.config.exports.mailReceiver
   ) {
     await exportAs.mail(
       this.credentials.sendgrid,
-      this.config.exports.mailSender,
-      this.config.exports.mailReceiver,
+      mailSender,
+      mailReceiver,
       attachmentContent
     );
+  }
+
+  setConfig(config) {
+    if (config) {
+      _shared.config = deepmerge(_shared.config, config);
+    }
   }
 
   setCredentials(credentials) {
