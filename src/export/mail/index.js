@@ -1,8 +1,8 @@
 const moment = require('moment');
 const sgMail = require('@sendgrid/mail');
 
-async function sendMail(apiKey, receiver, attachmentContent) {
-  sgMail.setApiKey(apiKey);
+async function sendMail(credentials, receiver, attachmentContent) {
+  sgMail.setApiKey(credentials.apiKey);
 
   let htmlContent =
     '<h1>Fiche de remplissage</h1><h2>Taux de remplissage:</h2>';
