@@ -7,12 +7,16 @@ const manageInventories = require('./inventory');
 const exportAs = require('./export');
 
 class PizzadoorStocksManager {
-  constructor(config) {
+  constructor(config, credentials) {
     this.scraper = new Scraper();
     this.atms = [];
 
     if (config) {
       _shared.config = deepmerge(_shared.config, config);
+    }
+
+    if (credentials) {
+      this.setCredentials(credentials);
     }
 
     this.config = _shared.config;
@@ -48,6 +52,19 @@ class PizzadoorStocksManager {
       this.config.exports.mailReceiver,
       attachmentContent
     );
+  }
+
+  setCredentials(credentials) {
+    if (!credentials) return;
+    if (credentials.sendGrid && credentials.sendGrid.apiKey) {
+      process.env.SENDGRID_APIKEY = credentials.sendGrid.apiKey;
+    }
+    if (credentials.adial && credentials.adial.username) {
+      process.env.ADIAL_USERNAME = credentials.adial.username;
+    }
+    if (credentials.adial && credentials.adial.password) {
+      process.env.ADIAL_PASSWORD = credentials.adial.password;
+    }
   }
 }
 
