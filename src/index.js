@@ -49,6 +49,7 @@ class PizzadoorStocksManager {
   ) {
     await exportAs.mail(
       this.credentials.sendgrid,
+      this.config.exports.mailSender,
       this.config.exports.mailReceiver,
       attachmentContent
     );

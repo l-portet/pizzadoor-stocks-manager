@@ -1,7 +1,7 @@
 const moment = require('moment');
 const sgMail = require('@sendgrid/mail');
 
-async function sendMail(credentials, receiver, attachmentContent) {
+async function sendMail(credentials, sender, receiver, attachmentContent) {
   sgMail.setApiKey(credentials.apiKey);
 
   let htmlContent =
@@ -13,8 +13,8 @@ async function sendMail(credentials, receiver, attachmentContent) {
   htmlContent += '<h5>Fiche de remplissage DAP en PJ.</h5>';
 
   const msg = {
+    from: sender,
     to: receiver,
-    from: 'test@example.com',
     subject: `Fiche de remplissage DAP - ${moment().format(
       'DD.MM.YYYY HH:mm'
     )}`,
