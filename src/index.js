@@ -1,4 +1,3 @@
-require('dotenv').config();
 require('./config');
 
 const deepmerge = require('deepmerge');
@@ -8,8 +7,6 @@ const exportAs = require('./export');
 
 class PizzadoorStocksManager {
   constructor(config, credentials) {
-    this.scraper = new Scraper();
-    this.atms = [];
 
     if (config) {
       _shared.config = deepmerge(_shared.config, config);
@@ -18,6 +15,9 @@ class PizzadoorStocksManager {
     if (credentials) {
       this.setCredentials(credentials);
     }
+
+    this.scraper = new Scraper(this.credentials.adial);
+    this.atms = [];
 
     this.config = _shared.config;
   }
@@ -48,23 +48,22 @@ class PizzadoorStocksManager {
     mailReceiver = this.config.exports.mailReceiver
   ) {
     await exportAs.mail(
-      process.env.SENDGRID_APIKEY,
+      this.credentials.sendgrid.apiKey,
       this.config.exports.mailReceiver,
       attachmentContent
     );
   }
 
   setCredentials(credentials) {
-    if (!credentials) return;
-    if (credentials.sendGrid && credentials.sendGrid.apiKey) {
-      process.env.SENDGRID_APIKEY = credentials.sendGrid.apiKey;
-    }
-    if (credentials.adial && credentials.adial.username) {
-      process.env.ADIAL_USERNAME = credentials.adial.username;
-    }
-    if (credentials.adial && credentials.adial.password) {
-      process.env.ADIAL_PASSWORD = credentials.adial.password;
-    }
+    if (!credentials) {
+      this.credentials = {
+        adial: null,
+        sendgrid: null
+      };
+      return;
+    };
+
+    this.credentials = deepmerge(this.credentials, credentials);
   }
 }
 

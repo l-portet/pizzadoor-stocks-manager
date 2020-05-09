@@ -1,4 +1,5 @@
 const fs = require('fs');
+const deepmerge = require('deepmerge');
 
 const setup = require('./setup');
 const normalize = require('./normalize');
@@ -6,13 +7,12 @@ const normalize = require('./normalize');
 const browserActions = require('./browser-actions');
 
 class Scraper {
-  constructor() {
+  constructor(credentials) {
     this.atms = [];
     this.baseURL = 'https://www.mypizzadoor.com/';
 
-    if (typeof global._shared === 'undefined') {
-      global._shared = {};
-    }
+    this.credentials = {};
+    this.setCredentials(credentials);
 
     return this;
   }
@@ -29,8 +29,8 @@ class Scraper {
   async run() {
     await _shared.page.goto(this.baseURL);
     await browserActions.login(
-      process.env.ADIAL_USERNAME,
-      process.env.ADIAL_PASSWORD
+      this.credentials.username,
+      this.credentials.password
     );
 
     this.atms = await browserActions.getAtmsInfos();
@@ -56,6 +56,12 @@ class Scraper {
   async close() {
     await _shared.browser.close();
     return this;
+  }
+
+  setCredentials(credentials) {
+    if (!credentials) return;
+
+    this.credentials = deepmerge(this.credentials, credentials);
   }
 }
 
