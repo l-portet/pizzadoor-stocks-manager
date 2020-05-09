@@ -1,8 +1,11 @@
-# Todo
+# Todo list
 
+## Done
 + Fix mail config (on sender)
++ Write a bit of docs (README + sample config file)
 
-- Write docs (README + sample config file)
+## To do
+- Error handling (Mostly in scraper)
 - Set a `fillPercentage` by atm's pizza type
 - Enhance scraper features?
 - Set scraper as independent entity
