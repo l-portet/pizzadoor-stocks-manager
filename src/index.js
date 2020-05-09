@@ -21,6 +21,13 @@ class PizzadoorStocksManager {
 
     this.config = _shared.config;
   }
+  
+  async fetchAndManage() {
+    await this.fetchAtmsData();
+    this.manageInventories();
+
+    return this.getAtmsData();
+  }
 
   getAtmsData() {
     return this.atms;
@@ -32,7 +39,7 @@ class PizzadoorStocksManager {
     this.atms = this.scraper.getAtms();
     await this.scraper.close();
 
-    return this;
+    return this.getAtmsData();
   }
 
   manageInventories() {
