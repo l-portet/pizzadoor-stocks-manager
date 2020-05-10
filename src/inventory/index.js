@@ -17,6 +17,7 @@ function getPizzasToCraft(atm) {
 }
 
 function getPizzasToCraftInStocks(stocks, fillPercentage) {
+  if (!stocks) stocks = {};
   stocks.toCraft = 0;
   fillPercentage /= 100;
 
