@@ -10,5 +10,6 @@ module.exports = {
   },
   pizzaTypes: {},
   atms: {},
-  exports: {}
+  exports: {},
+  limitTimeHours: 7
 };

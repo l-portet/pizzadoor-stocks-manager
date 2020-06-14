@@ -1,7 +1,8 @@
 const moment = require('moment');
 
 async function extractCurrentInventory(url) {
-  const { page } = _shared;
+  const { page, config } = _shared;
+  const { limitTimeHours } = config;
 
   url = getInventoryUrl(url);
   await page.goto(url);
@@ -22,7 +23,7 @@ async function extractCurrentInventory(url) {
     });
   });
 
-  items = removeShortLifetimeItems(items);
+  items = removeShortLifetimeItems(items, limitTimeHours);
 
   return getStocks(items);
 }
@@ -32,20 +33,20 @@ function getInventoryUrl(url) {
   return url[0] + '?page=magasin';
 }
 
-function removeShortLifetimeItems(items) {
+function removeShortLifetimeItems(items, limitTimeHours) {
   return items.map(item => {
     let filled = true;
 
-    if (expiresBeforeLimitTime(item.expirationDate)) filled = false;
+    if (expiresBeforeLimitTime(item.expirationDate, limitTimeHours)) filled = false;
     return { ...item, filled };
   });
 }
 
-function expiresBeforeLimitTime(expirationDate) {
+function expiresBeforeLimitTime(expirationDate, limitTimeHours) {
   let date = moment(expirationDate, 'DD/MM/YYYY HH:mm:ss');
   let nowPlusLimitTime = moment();
 
-  nowPlusLimitTime.add(7, 'h');
+  nowPlusLimitTime.add(limitTimeHours, 'h');
 
   if (date.isBefore(nowPlusLimitTime) || !expirationDate.length) return true;
   return false;

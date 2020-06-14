@@ -14,5 +14,6 @@ module.exports = {
   exports: {
     mailSender: 'sender@example.com',
     mailReceiver: 'receiver@example.com'
-  }
+  },
+  limitTimeHours: 7 // Consider each pizza expiring in the next 7 hours as already expired
 };
