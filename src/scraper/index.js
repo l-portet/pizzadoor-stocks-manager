@@ -38,6 +38,8 @@ class Scraper {
     for (let [index, { name, link }] of this.atms.entries()) {
       // Cannot stack Promises in async logic since we only use one page
       let url = await browserActions.getDirectUrl(link);
+
+      if (!url) continue;
       let inventory = await browserActions.extractCurrentInventory(url);
 
       this.atms[index] = { name, inventory };

@@ -6,13 +6,13 @@ const CLASSES = {
   },
   title: {
     font: {
-      size: 30,
+      size: 20,
       bold: true
     }
   },
   divider: {
     font: {
-      size: 26,
+      size: 16,
       bold: true,
       color: {
         argb: 'FF0000FF'
@@ -21,13 +21,13 @@ const CLASSES = {
   },
   item: {
     font: {
-      size: 26,
+      size: 16,
       bold: true
     }
   },
   'total-row': {
     font: {
-      size: 26,
+      size: 16,
       bold: true,
       color: {
         argb: 'FFFF0000'

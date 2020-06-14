@@ -1,4 +1,5 @@
 const Excel = require('exceljs');
+const deepmerge = require('deepmerge');
 const { CLASSES } = require('./styles');
 const addTotalAtms = require('./add-total-atms');
 const groupPizzasByType = require('./group-pizzas-by-type');
@@ -13,6 +14,9 @@ async function createExcel(atms) {
 
   applyClassStyle(worksheet.getRow(1), 'title');
 
+  addBordersToColumns(worksheet);
+  addBordersToRows(worksheet);
+
   // await workbook.xlsx.writeFile('export.xlsx');
   // Return file buffer
   return await workbook.xlsx.writeBuffer();
@@ -21,7 +25,7 @@ async function createExcel(atms) {
 function setupWorkbook(atms) {
   let workbook = new Excel.Workbook();
 
-  workbook.creator = 'Adial Scraper';
+  workbook.creator = 'Pizzadoor Stocks Manager';
   workbook.created = new Date();
   workbook.modified = new Date();
 
@@ -114,6 +118,41 @@ function applyClassStyle(row, className) {
 function applyClassStyleProperties(row, classStyle) {
   for (let prop in classStyle) {
     row[prop] = classStyle[prop];
+  }
+}
+
+function addBordersToRows(worksheet) {
+  const firstRow = worksheet.getRow(1);
+  const lastRow = worksheet.getRow(16);
+
+  firstRow.eachCell(
+    cell =>
+      (cell.border = deepmerge(cell.style.border, {
+        top: { style: 'medium' }
+      }))
+  );
+
+  // TEMP lastRow.eachCell doesn't seem to work for the moment
+  lastRow._cells.forEach(
+    cell =>
+      (cell.border = deepmerge(cell.style.border, {
+        bottom: { style: 'medium' }
+      }))
+  );
+}
+
+function addBordersToColumns(worksheet) {
+  for (const [index, column] of worksheet.columns.entries()) {
+    let borderStyle;
+
+    if (index % 2 === 0) {
+      borderStyle = { left: { style: 'medium' } };
+    } else {
+      borderStyle = { right: { style: 'medium' } };
+    }
+    column.eachCell(
+      cell => (cell.style.border = deepmerge(cell.style.border, borderStyle))
+    );
   }
 }
 
