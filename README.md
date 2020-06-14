@@ -23,8 +23,8 @@ npm install
   const config = {};
   const credentials = {
     adial: {
-      username: 'MyUsername',
-      password: 'MySuperSecretPassword'
+      username: 'my-username',
+      password: 'my-super-secret-password'
     }
   };
   
