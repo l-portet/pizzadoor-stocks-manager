@@ -17,7 +17,6 @@ async function createExcel(atms) {
   addBordersToColumns(worksheet);
   addBordersToRows(worksheet);
 
-  // await workbook.xlsx.writeFile('export.xlsx');
   // Return file buffer
   return await workbook.xlsx.writeBuffer();
 }
