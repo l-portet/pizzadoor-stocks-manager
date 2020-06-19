@@ -97,6 +97,11 @@ class Scraper {
     this.config = deepmerge(this.config, config);
   }
 
+  async close() {
+    await this.context.close();
+    this.context = null;
+  }
+
   static async closeBrowser() {
     if (Scraper.prototype.browser) {
       await Scraper.prototype.browser.close();

@@ -35,6 +35,7 @@ class PizzadoorStocksManager {
     await this.scraper.run();
     this.atms = this.scraper.getAtms();
 
+    await this.scraper.close();
     return this.getAtmsData();
   }
 
