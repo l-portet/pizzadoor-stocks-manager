@@ -73,18 +73,5 @@ function checkName(a, b) {
   }
   return 0;
 }
-/* TEMP TODO MAYBE NOT USE */
-function groupByPizzaType(inventory) {
-  let result = {};
-
-  for (let item of inventory) {
-    if (typeof result[item.type] === 'undefined')
-      result[item.type] = [];
-    result[item.type].push(item);
-  }
-
-  return result;
-}
-/* TEMP TODO MAYBE NOT USE */
 
 module.exports = setPizzaTypes;

@@ -17,7 +17,7 @@ function mergeInventories(atms) {
     }
   }
 
-  return { name: 'total', inventory: mergedInventory };
+  return { name: 'Total', inventory: mergedInventory };
 }
 /* TODO TEMP Maybe unuseful */
 

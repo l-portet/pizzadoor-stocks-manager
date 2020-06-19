@@ -16,6 +16,7 @@ async function createExcel(atms) {
 
   addBordersToColumns(worksheet);
   addBordersToRows(worksheet);
+  setHeightToRows(worksheet);
 
   // Return file buffer
   return await workbook.xlsx.writeBuffer();
@@ -36,7 +37,7 @@ function setupWorkbook(atms) {
     columns.push({
       header: atm.name,
       key: atm.name + '-pizzaName',
-      width: 50
+      width: 25
     });
     columns.push({
       header: '',
@@ -111,12 +112,12 @@ function addRowsInWorksheet(atms, worksheet, rows) {
 function applyClassStyle(row, className) {
   if (typeof CLASSES[className] === 'undefined')
     applyClassStyleProperties(row, CLASSES['default']);
-  else applyClassStyleProperties(row, CLASSES[className]);
+  applyClassStyleProperties(row, CLASSES[className]);
 }
 
 function applyClassStyleProperties(row, classStyle) {
   for (let prop in classStyle) {
-    row[prop] = classStyle[prop];
+    row[prop] = deepmerge(row[prop], classStyle[prop]);
   }
 }
 
@@ -153,6 +154,13 @@ function addBordersToColumns(worksheet) {
       cell => (cell.style.border = deepmerge(cell.style.border, borderStyle))
     );
   }
+}
+
+function setHeightToRows(worksheet) {
+  let firstRow = worksheet.getRow(0);
+
+  firstRow.hidden = false;
+  firstRow.height = 37;
 }
 
 module.exports = createExcel;

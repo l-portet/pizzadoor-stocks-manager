@@ -11,6 +11,9 @@ function uniformInventories(atms) {
 
   for (let atm of atms) {
     for (let uniqueProp of uniqueProps) {
+      if (typeof atm.inventory === 'undefined') {
+        atm.inventory = {};
+      }
       if (typeof atm.inventory[uniqueProp] === 'undefined') {
         atm.inventory[uniqueProp] = null;
       }
