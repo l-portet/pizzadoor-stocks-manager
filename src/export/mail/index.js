@@ -28,7 +28,7 @@ async function sendMail(
     attachments: [
       {
         content: attachmentContent,
-        filename: 'output.xlsx',
+        filename: getFileName(),
         type:
           'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         disposition: 'attachment'
