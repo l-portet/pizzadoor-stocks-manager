@@ -7,19 +7,16 @@ const exportAs = require('./export');
 
 class PizzadoorStocksManager {
   constructor(config, credentials) {
-
     if (config) {
-      this.setConfig(config)
+      this.setConfig(config);
     }
 
     if (credentials) {
       this.setCredentials(credentials);
     }
 
-    this.scraper = new Scraper(this.credentials.adial);
+    this.scraper = new Scraper(this.credentials.adial, this.config);
     this.atms = [];
-
-    this.config = _shared.config;
   }
 
   async fetchAndManage() {
@@ -37,13 +34,12 @@ class PizzadoorStocksManager {
     await this.scraper.init();
     await this.scraper.run();
     this.atms = this.scraper.getAtms();
-    await this.scraper.close();
 
     return this.getAtmsData();
   }
 
   manageInventories() {
-    return manageInventories(this.atms);
+    return manageInventories(this.atms, this.config);
   }
 
   async exportAsExcel() {
@@ -57,6 +53,7 @@ class PizzadoorStocksManager {
   ) {
     await exportAs.mail(
       this.credentials.sendgrid,
+      this.config,
       mailSender,
       mailReceiver,
       attachmentContent
@@ -65,7 +62,7 @@ class PizzadoorStocksManager {
 
   setConfig(config) {
     if (config) {
-      _shared.config = deepmerge(_shared.config, config);
+      this.config = deepmerge(this.config, config);
     }
   }
 
@@ -76,9 +73,13 @@ class PizzadoorStocksManager {
         sendgrid: null
       };
       return;
-    };
+    }
 
     this.credentials = deepmerge(this.credentials, credentials);
+  }
+
+  static async close() {
+    await Scraper.closeBrowser();
   }
 }
 

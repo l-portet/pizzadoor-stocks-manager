@@ -1,5 +1,4 @@
-async function getDirectUrl(rawUrl) {
-  const { page } = _shared;
+async function getDirectUrl(page, rawUrl) {
   let url;
 
   try {

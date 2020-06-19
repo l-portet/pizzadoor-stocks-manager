@@ -12,10 +12,4 @@ try {
 
 config = deepmerge(defaultConfig, userConfig);
 
-if (typeof global._shared === 'undefined') {
-  global._shared = {};
-}
-
-global._shared.config = config;
-
 module.exports = config;

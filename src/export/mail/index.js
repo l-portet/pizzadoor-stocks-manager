@@ -1,14 +1,14 @@
 const moment = require('moment');
 const sgMail = require('@sendgrid/mail');
 
-async function sendMail(credentials, sender, receiver, attachmentContent) {
+async function sendMail(credentials, config, sender, receiver, attachmentContent) {
   sgMail.setApiKey(credentials.apiKey);
 
   let htmlContent =
     '<h1>Fiche de remplissage</h1><h2>Taux de remplissage:</h2>';
 
-  for (let prop in _shared.config.atms) {
-    htmlContent += `<p>${prop}: ${_shared.config.atms[prop].fillPercentage}%</p>`;
+  for (let prop in config.atms) {
+    htmlContent += `<p>${prop}: ${config.atms[prop].fillPercentage}%</p>`;
   }
   htmlContent += '<h5>Fiche de remplissage DAP en PJ.</h5>';
 

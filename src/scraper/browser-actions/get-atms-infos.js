@@ -1,7 +1,5 @@
 
-async function getAtmInfos() {
-  const { page } = _shared;
-
+async function getAtmInfos(page) {
   let { names, links } = await page.$$eval(
     'a.list-group-item.daplink',
     links => {

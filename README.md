@@ -19,7 +19,7 @@ npm install
 ### Quick start
 ```javascript
   const PizzadoorStocksManager = require('pizzadoor-stocks-manager');
-  
+
   const config = {};
   const credentials = {
     adial: {
@@ -27,11 +27,12 @@ npm install
       password: 'my-super-secret-password'
     }
   };
-  
+
   let manager = new PizzadoorStocksManager(config, credentials);
-  
+
   manager.fetchAndManage()
     .then(atmsData => console.log(atmsData))
+    .then(() => PizzadoorStocksManager.close());
 ```
 
 ### Credentials

@@ -1,9 +1,6 @@
 const moment = require('moment');
 
-async function extractCurrentInventory(url) {
-  const { page, config } = _shared;
-  const { limitTimeHours } = config;
-
+async function extractCurrentInventory(page, url, limitTimeHours) {
   url = getInventoryUrl(url);
   await page.goto(url);
 

@@ -1,10 +1,10 @@
-function manageInventories(atms) {
-  atms = atms.map(getPizzasToCraft);
+function manageInventories(atms, config) {
+  atms = atms.map(atm => getPizzasToCraft(atm, config));
   return atms;
 }
 
-function getPizzasToCraft(atm) {
-  let { fillPercentage } = _shared.config.atms[atm.name] || 100;
+function getPizzasToCraft(atm, config) {
+  let { fillPercentage } = config.atms[atm.name] || 100;
 
   atm.inventory = atm.inventory.map(pizza => {
     return {
