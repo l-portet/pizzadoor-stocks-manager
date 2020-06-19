@@ -1,7 +1,13 @@
 const moment = require('moment');
 const sgMail = require('@sendgrid/mail');
 
-async function sendMail(credentials, config, sender, receiver, attachmentContent) {
+async function sendMail(
+  credentials,
+  config,
+  sender,
+  receiver,
+  attachmentContent
+) {
   sgMail.setApiKey(credentials.apiKey);
 
   let htmlContent =
@@ -36,6 +42,12 @@ async function sendMail(credentials, config, sender, receiver, attachmentContent
   } catch (e) {
     console.error('Mail cannot be sent.');
   }
+}
+
+function getFileName() {
+  const formattedDate = moment().format('DD_MM_YYYY');
+
+  return `fiche-dap-${formattedDate}.xlsx`;
 }
 
 module.exports = sendMail;
