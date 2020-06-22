@@ -32,7 +32,6 @@ npm install
 
   manager.fetchAndManage()
     .then(atmsData => console.log(atmsData))
-    .then(() => PizzadoorStocksManager.close());
 ```
 
 ### Credentials

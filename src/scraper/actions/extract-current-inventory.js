@@ -1,6 +1,49 @@
 const moment = require('moment');
 
-async function extractCurrentInventory(page, url, limitTimeHours) {
+async function extractCurrentInventory(
+  http,
+  baseUrl,
+  atmCookie,
+  limitTimeHours
+) {
+  let inventory = [];
+  let res;
+  let date = moment().format('ddd, DD MMM YYYY kk:mm:ss');
+  const url = baseUrl + '/admin/';
+  const config = {
+    headers: {
+      Cookie: atmCookie
+    },
+    params: {
+      page: 'magasin',
+      controller: 'ajx',
+      do: 'get',
+      type: 'magasin_status',
+      date
+    }
+  };
+
+  try {
+    res = await http.get(url, config);
+  } catch (e) {
+    res = { data: {} };
+  }
+
+  if (!Array.isArray(res.data.magasin_status)) {
+    return [];
+  }
+
+  inventory = res.data.magasin_status.map(pizzaSlot => ({
+    name: pizzaSlot.nom_pizza,
+    expirationDate: pizzaSlot.date_peremption,
+    filled: !!pizzaSlot.date_peremption
+  }));
+  inventory = removeShortLifetimeItems(inventory, limitTimeHours);
+
+  return getStocks(inventory);
+}
+/*
+async function extractCurrentInventory($, url, limitTimeHours) {
   url = getInventoryUrl(url);
   await page.goto(url);
 
@@ -29,12 +72,14 @@ function getInventoryUrl(url) {
   url = url.split('?');
   return url[0] + '?page=magasin';
 }
+*/
 
 function removeShortLifetimeItems(items, limitTimeHours) {
   return items.map(item => {
     let filled = true;
 
-    if (expiresBeforeLimitTime(item.expirationDate, limitTimeHours)) filled = false;
+    if (expiresBeforeLimitTime(item.expirationDate, limitTimeHours))
+      filled = false;
     return { ...item, filled };
   });
 }

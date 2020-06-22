@@ -1,84 +1,86 @@
 const fs = require('fs');
 const deepmerge = require('deepmerge');
-const exec = require('child_process').exec;
+const axios = require('axios');
+const cheerio = require('cheerio');
 
 const setup = require('./setup');
 const normalize = require('./normalize');
-// browserActions contains all the scraping logic that manipulates the browser
-const browserActions = require('./browser-actions');
+// actions contains all the scraping logic that manipulates the scraper
+const actions = require('./actions');
 
 class Scraper {
   constructor(credentials, config) {
-    this.baseURL = 'https://www.mypizzadoor.com/';
     this.atms = [];
-    this.context = null;
-    this.page = null;
     this.config = {};
     this.credentials = {};
+    this.http = null;
 
     this.setConfig(config);
     this.setCredentials(credentials);
 
+    this.initHttpClient();
+
     return this;
   }
 
-  async init() {
-    // First instance created, launch browser
-    if (Scraper.prototype.browser === null) {
-      Scraper.prototype.browser = { isInitializing: true };
-      Scraper.prototype.browser = await setup.browser(this.config);
-
-      this.context = await setup.context(Scraper.prototype.browser);
-
-      // Browser is launching wait for it...
-    } else if (Scraper.prototype.browser.isInitializing) {
-      return new Promise((resolve, reject) => {
-        let waitInterval = setInterval(async () => {
-          if (!Scraper.prototype.browser.isInitializing) {
-            clearInterval(waitInterval);
-            this.context = await setup.context(Scraper.prototype.browser);
-            resolve(this);
-          }
-        }, 20);
-      });
-      // Browser is already launched jusst setup context
-    } else {
-      this.context = await setup.context(Scraper.prototype.browser);
-    }
-
-    return this;
+  initHttpClient() {
+    this.http = axios.create({
+      timeout: 60000
+    });
   }
 
   async run() {
-    this.page = await setup.page(this.context);
-
-    await this.page.goto(this.baseURL);
-    await browserActions.login(
-      this.page,
+    let dashboardConfig = await actions.login(
+      this.http,
       this.credentials.username,
       this.credentials.password
     );
+    let proms = [];
 
-    this.atms = await browserActions.getAtmsInfos(this.page);
+    this.atms = await actions.getAtmsInfos(this.http, dashboardConfig);
 
     for (let [index, { name, link }] of this.atms.entries()) {
-      // Cannot stack Promises in async logic since we only use one page
-      let url = await browserActions.getDirectUrl(this.page, link);
-
-      if (!url) continue;
-      let inventory = await browserActions.extractCurrentInventory(
-        this.page,
-        url,
-        this.config.limitTimeHours
-      );
-
-      this.atms[index] = { name, inventory };
+      proms.push(this.fetchAtm(name, link, dashboardConfig, index));
     }
+
+    await Promise.all(proms);
 
     // Normalize data
     this.atms = normalize(this.atms, this.config);
 
     return this;
+  }
+
+  async fetchAtm(name, link, dashboardConfig, index) {
+    return new Promise(async (resolve, reject) => {
+      let { url, baseUrl } = await actions.getAtmDirectUrl(
+        this.http,
+        link,
+        dashboardConfig.cookies
+      );
+      let {
+        cookies: atmCookies,
+        baseUrl: altBaseUrl
+      } = await actions.getAtmCookie(this.http, url, dashboardConfig.cookies);
+
+      if (altBaseUrl) {
+        baseUrl = altBaseUrl;
+      }
+      if (!url || !atmCookies) {
+        this.atms[index] = { name, inventory: [] };
+        return resolve();
+      }
+
+      let inventory = await actions.extractCurrentInventory(
+        this.http,
+        baseUrl,
+        atmCookies,
+        this.config.limitTimeHours
+      );
+
+      this.atms[index] = { name, inventory };
+      resolve();
+    });
   }
 
   getAtms() {
@@ -96,20 +98,6 @@ class Scraper {
 
     this.config = deepmerge(this.config, config);
   }
-
-  async close() {
-    await this.context.close();
-    this.context = null;
-  }
-
-  static async closeBrowser() {
-    if (Scraper.prototype.browser) {
-      await Scraper.prototype.browser.close();
-      Scraper.prototype.browser = null;
-    }
-  }
 }
-
-Scraper.prototype.browser = null;
 
 module.exports = Scraper;

@@ -31,11 +31,9 @@ class PizzadoorStocksManager {
   }
 
   async fetchAtmsData() {
-    await this.scraper.init();
     await this.scraper.run();
     this.atms = this.scraper.getAtms();
 
-    await this.scraper.close();
     return this.getAtmsData();
   }
 
@@ -77,10 +75,6 @@ class PizzadoorStocksManager {
     }
 
     this.credentials = deepmerge(this.credentials, credentials);
-  }
-
-  static async close() {
-    await Scraper.closeBrowser();
   }
 }
 

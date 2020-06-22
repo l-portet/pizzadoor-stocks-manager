@@ -4,7 +4,8 @@ function manageInventories(atms, config) {
 }
 
 function getPizzasToCraft(atm, config) {
-  let { fillPercentage } = config.atms[atm.name];
+  let atmConfig = config.atms[atm.name] || { fillPercentage: undefined };
+  let { fillPercentage } = atmConfig;
 
   if (typeof fillPercentage === 'undefined') {
     fillPercentage = 100;
