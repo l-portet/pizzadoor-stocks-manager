@@ -1,18 +1,15 @@
+const axios = require('axios');
 const moment = require('moment');
 
-async function extractCurrentInventory(
-  http,
-  baseUrl,
-  atmCookie,
-  limitTimeHours
-) {
+async function extractAtmInventory(baseUrl, atmCookies, limitTimeHours) {
   let inventory = [];
   let res;
   let date = moment().format('ddd, DD MMM YYYY kk:mm:ss');
   const url = baseUrl + '/admin/';
   const config = {
     headers: {
-      Cookie: atmCookie
+      Cookie: atmCookies,
+      connection: 'keep-alive'
     },
     params: {
       page: 'magasin',
@@ -24,7 +21,7 @@ async function extractCurrentInventory(
   };
 
   try {
-    res = await http.get(url, config);
+    res = await axios.get(url, config);
   } catch (e) {
     res = { data: {} };
   }
@@ -42,37 +39,6 @@ async function extractCurrentInventory(
 
   return getStocks(inventory);
 }
-/*
-async function extractCurrentInventory($, url, limitTimeHours) {
-  url = getInventoryUrl(url);
-  await page.goto(url);
-
-  let items = await page.$$eval('#magasin tr', rows => {
-    // Remove header rows
-    rows.splice(36, 1);
-    rows.splice(0, 1);
-
-    return rows.map(row => {
-      let result = {};
-
-      result.name = row.cells[1].innerText;
-      result.expirationDate = row.cells[2].innerText;
-      result.filled = !!result.expirationDate;
-
-      return result;
-    });
-  });
-
-  items = removeShortLifetimeItems(items, limitTimeHours);
-
-  return getStocks(items);
-}
-
-function getInventoryUrl(url) {
-  url = url.split('?');
-  return url[0] + '?page=magasin';
-}
-*/
 
 function removeShortLifetimeItems(items, limitTimeHours) {
   return items.map(item => {
@@ -123,4 +89,4 @@ function setEmptyStocks(stocks) {
   return stocks;
 }
 
-module.exports = extractCurrentInventory;
+module.exports = extractAtmInventory;

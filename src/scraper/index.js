@@ -1,6 +1,4 @@
-const fs = require('fs');
 const deepmerge = require('deepmerge');
-const axios = require('axios');
 const cheerio = require('cheerio');
 
 const setup = require('./setup');
@@ -13,34 +11,24 @@ class Scraper {
     this.atms = [];
     this.config = {};
     this.credentials = {};
-    this.http = null;
 
     this.setConfig(config);
     this.setCredentials(credentials);
 
-    this.initHttpClient();
-
     return this;
   }
 
-  initHttpClient() {
-    this.http = axios.create({
-      timeout: 60000
-    });
-  }
-
   async run() {
-    let dashboardConfig = await actions.login(
-      this.http,
+    const proms = [];
+    const { atms, cookies: dashboardCookies } = await actions.login(
       this.credentials.username,
       this.credentials.password
     );
-    let proms = [];
 
-    this.atms = await actions.getAtmsInfos(this.http, dashboardConfig);
+    this.atms = atms;
 
     for (let [index, { name, link }] of this.atms.entries()) {
-      proms.push(this.fetchAtm(name, link, dashboardConfig, index));
+      proms.push(this.fetchAtm(name, link, dashboardCookies, index));
     }
 
     await Promise.all(proms);
@@ -51,36 +39,18 @@ class Scraper {
     return this;
   }
 
-  async fetchAtm(name, link, dashboardConfig, index) {
-    return new Promise(async (resolve, reject) => {
-      let { url, baseUrl } = await actions.getAtmDirectUrl(
-        this.http,
-        link,
-        dashboardConfig.cookies
-      );
-      let {
-        cookies: atmCookies,
-        baseUrl: altBaseUrl
-      } = await actions.getAtmCookie(this.http, url, dashboardConfig.cookies);
+  async fetchAtm(name, link, dashboardCookies, index) {
+    let { baseURL, cookies: atmCookies } = await actions.extractAtmInfos(
+      link,
+      dashboardCookies
+    );
+    let inventory = await actions.extractAtmInventory(
+      baseURL,
+      atmCookies,
+      this.config.limitTimeHours
+    );
 
-      if (altBaseUrl) {
-        baseUrl = altBaseUrl;
-      }
-      if (!url || !atmCookies) {
-        this.atms[index] = { name, inventory: [] };
-        return resolve();
-      }
-
-      let inventory = await actions.extractCurrentInventory(
-        this.http,
-        baseUrl,
-        atmCookies,
-        this.config.limitTimeHours
-      );
-
-      this.atms[index] = { name, inventory };
-      resolve();
-    });
+    this.atms[index] = { name, inventory };
   }
 
   getAtms() {
