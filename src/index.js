@@ -30,6 +30,12 @@ class PizzadoorStocksManager {
     return this.atms;
   }
 
+  async fetchAtmsNames() {
+    const { atms: atmsInfos } = await this.scraper.fetchAtmsInfos();
+
+    return atmsInfos.map(({ name }) => name);
+  }
+
   async fetchAtmsData() {
     await this.scraper.run();
     this.atms = this.scraper.getAtms();

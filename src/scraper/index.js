@@ -19,10 +19,7 @@ class Scraper {
 
   async run() {
     const proms = [];
-    const { atms, cookies: dashboardCookies } = await actions.login(
-      this.credentials.username,
-      this.credentials.password
-    );
+    const { atms, cookies: dashboardCookies } = await this.fetchAtmsInfos();
 
     this.atms = atms;
 
@@ -36,6 +33,13 @@ class Scraper {
     this.atms = normalize(this.atms, this.config);
 
     return this;
+  }
+
+  async fetchAtmsInfos() {
+    return await actions.login(
+      this.credentials.username,
+      this.credentials.password
+    );
   }
 
   async fetchAtm(name, link, dashboardCookies, index) {
