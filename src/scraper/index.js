@@ -1,7 +1,6 @@
 const deepmerge = require('deepmerge');
 const cheerio = require('cheerio');
 
-const setup = require('./setup');
 const normalize = require('./normalize');
 // actions contains all the scraping logic that manipulates the scraper
 const actions = require('./actions');
