@@ -2,12 +2,12 @@
 🍕🤖 Stocks manager for Adial pizza ATM (pizzadoor)
 
 ## Installation
-> Note that we use this adress in this example: `git+https://github.com/l-portet/pizzadoor-stocks-manager.git`. But consider it might change upon next versions.
+> Note that we use this adress in this example: `https://github.com/l-portet/pizzadoor-stocks-manager/tarball/master`. But consider it might change upon next versions.
 
 Add this line in the package.json:
 ```javascript
   "dependencies": {
-    "pizzadoor-stocks-manager": "git+https://github.com/l-portet/pizzadoor-stocks-manager.git"
+    "pizzadoor-stocks-manager": "https://github.com/l-portet/pizzadoor-stocks-manager/tarball/master"
    }
 ```
 Then, just run (it might take a while due to puppeteer installation)
