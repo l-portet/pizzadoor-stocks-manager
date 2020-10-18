@@ -46,6 +46,7 @@ function removeShortLifetimeItems(items, limitTimeHours) {
 
     if (expiresBeforeLimitTime(item.expirationDate, limitTimeHours))
       filled = false;
+
     return { ...item, filled };
   });
 }

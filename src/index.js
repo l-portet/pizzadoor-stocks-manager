@@ -1,4 +1,4 @@
-require('./config');
+const defaultConfig = require('./config');
 
 const deepmerge = require('deepmerge');
 const Scraper = require('./scraper');
@@ -7,6 +7,8 @@ const exportAs = require('./export');
 
 class PizzadoorStocksManager {
   constructor(config, credentials) {
+    this.config = defaultConfig;
+
     if (config) {
       this.setConfig(config);
     }
@@ -68,6 +70,10 @@ class PizzadoorStocksManager {
   setConfig(config) {
     if (config) {
       this.config = deepmerge(this.config, config);
+    }
+
+    if (this.scraper) {
+      this.scraper.setConfig(this.config);
     }
   }
 

@@ -52,7 +52,6 @@ class Scraper {
       atmCookies,
       this.config.limitTimeHours
     );
-
     this.atms[index] = { name, inventory };
   }
 
