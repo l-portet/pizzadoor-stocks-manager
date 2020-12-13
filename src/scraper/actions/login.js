@@ -3,11 +3,7 @@ const qs = require('querystring');
 const parseAtmsLinks = require('./parse-atms-links');
 const getCookies = require('../utils/get-cookies');
 
-const CancelToken = axios.CancelToken;
-const source = CancelToken.source();
-
 const http = axios.create({
-  cancelToken: source.token,
   timeout: 5000,
   headers: {
     'X-Requested-With': 'XMLHttpRequest'
@@ -49,7 +45,6 @@ async function login(username, password) {
   const config = {
     maxRedirects: 0
   };
-  setTimeout(source.cancel, 5000);
   const res = await http.post(url, qs.stringify(data), config);
 
   return {
