@@ -1,12 +1,17 @@
 const axios = require('axios');
 const moment = require('moment');
 
+const CancelToken = axios.CancelToken;
+const source = CancelToken.source();
+
 async function extractAtmInventory(baseUrl, atmCookies, limitTimeHours) {
   let inventory = [];
   let res;
   let date = moment().format('ddd, DD MMM YYYY kk:mm:ss');
   const url = baseUrl + '/admin/';
   const config = {
+    cancelToken: source.token,
+    timeout: 5000,
     headers: {
       Cookie: atmCookies,
       connection: 'keep-alive'
@@ -21,6 +26,7 @@ async function extractAtmInventory(baseUrl, atmCookies, limitTimeHours) {
   };
 
   try {
+    setTimeout(source.cancel, 5000);
     res = await axios.get(url, config);
   } catch (e) {
     res = { data: {} };

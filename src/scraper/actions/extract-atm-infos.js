@@ -2,8 +2,12 @@ const axios = require('axios');
 const qs = require('querystring');
 const getCookies = require('../utils/get-cookies');
 
+const CancelToken = axios.CancelToken;
+const source = CancelToken.source();
+
 const http = axios.create({
-  timeout: 10000,
+  cancelToken: source.token,
+  timeout: 5000,
   maxRedirects: 0,
   headers: {
     connection: 'keep-alive',
@@ -27,6 +31,8 @@ http.interceptors.response.use(async res => {
     } else {
       redirectURL = res.headers.location;
     }
+
+    setTimeout(source.cancel, 5000);
 
     return await http({
       url: redirectURL, // res.headers.location,
