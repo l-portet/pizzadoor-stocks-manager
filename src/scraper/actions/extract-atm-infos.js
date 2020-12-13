@@ -7,7 +7,7 @@ const source = CancelToken.source();
 
 const http = axios.create({
   cancelToken: source.token,
-  timeout: 5000,
+  timeout: 15000,
   maxRedirects: 0,
   headers: {
     connection: 'keep-alive',
@@ -32,8 +32,6 @@ http.interceptors.response.use(async res => {
       redirectURL = res.headers.location;
     }
 
-    setTimeout(source.cancel, 5000);
-
     return await http({
       url: redirectURL, // res.headers.location,
       method: res.config.method,
@@ -57,6 +55,7 @@ async function extractAtmInfos(url, cookies) {
   };
 
   try {
+    setTimeout(source.cancel, 15000);
     res = await http.get(url, config);
 
     return {

@@ -11,7 +11,7 @@ async function extractAtmInventory(baseUrl, atmCookies, limitTimeHours) {
   const url = baseUrl + '/admin/';
   const config = {
     cancelToken: source.token,
-    timeout: 5000,
+    timeout: 15000,
     headers: {
       Cookie: atmCookies,
       connection: 'keep-alive'
@@ -26,7 +26,7 @@ async function extractAtmInventory(baseUrl, atmCookies, limitTimeHours) {
   };
 
   try {
-    setTimeout(source.cancel, 5000);
+    setTimeout(source.cancel, 15000);
     res = await axios.get(url, config);
   } catch (e) {
     res = { data: {} };
