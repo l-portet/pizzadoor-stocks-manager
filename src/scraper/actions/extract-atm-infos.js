@@ -3,10 +3,8 @@ const qs = require('querystring');
 const getCookies = require('../utils/get-cookies');
 
 const CancelToken = axios.CancelToken;
-const source = CancelToken.source();
 
 const http = axios.create({
-  cancelToken: source.token,
   timeout: 15000,
   maxRedirects: 0,
   headers: {
@@ -47,8 +45,10 @@ http.interceptors.response.use(async res => {
 });
 
 async function extractAtmInfos(url, cookies) {
+  const source = CancelToken.source();
   let res;
   const config = {
+    cancelToken: source.token,
     headers: {
       Cookie: cookies
     }

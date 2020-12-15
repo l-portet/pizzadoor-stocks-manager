@@ -2,9 +2,9 @@ const axios = require('axios');
 const moment = require('moment');
 
 const CancelToken = axios.CancelToken;
-const source = CancelToken.source();
 
 async function extractAtmInventory(baseUrl, atmCookies, limitTimeHours) {
+  const source = CancelToken.source();
   let inventory = [];
   let res;
   let date = moment().format('ddd, DD MMM YYYY kk:mm:ss');
