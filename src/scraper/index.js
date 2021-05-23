@@ -18,13 +18,24 @@ class Scraper {
   }
 
   async run() {
+    const TIMEOUT_MS = 10 * 1000;
     const proms = [];
     const { atms, cookies: dashboardCookies } = await this.fetchAtmsInfos();
 
     this.atms = atms;
 
     for (let [index, { name, link }] of this.atms.entries()) {
-      proms.push(this.fetchAtm(name, link, dashboardCookies, index));
+      proms.push(
+        new Promise((resolve) => {
+          const onTimeout = () => {
+            console.error(`Error: Request timed out for ${name} (${link})`);
+            // Silently skip, results will be empty
+            resolve();
+          };
+          setTimeout(onTimeout, TIMEOUT_MS);
+          this.fetchAtm(name, link, dashboardCookies, index).then(resolve);
+        })
+      );
     }
 
     await Promise.all(proms);
