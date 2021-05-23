@@ -9,14 +9,14 @@ const http = axios.create({
   maxRedirects: 0,
   headers: {
     connection: 'keep-alive',
-    'X-Requested-With': 'XMLHttpRequest'
+    'X-Requested-With': 'XMLHttpRequest',
   },
   validateStatus(status) {
     return status >= 200 && status < 400;
-  }
+  },
 });
 
-http.interceptors.response.use(async res => {
+http.interceptors.response.use(async (res) => {
   if (res.status >= 300 && res.status < 400) {
     let redirectURL;
 
@@ -25,7 +25,9 @@ http.interceptors.response.use(async res => {
     }
 
     if (res.headers.location.startsWith('/')) {
-      redirectURL = res.config.url.split('/?')[0] + res.headers.location;
+      const origin = new URL(res.config.url).origin;
+
+      redirectURL = origin + res.headers.location;
     } else {
       redirectURL = res.headers.location;
     }
@@ -37,8 +39,8 @@ http.interceptors.response.use(async res => {
         Cookie: getCookies(
           res.config.headers['Cookie'],
           res.headers['set-cookie']
-        )
-      }
+        ),
+      },
     });
   }
   return res;
@@ -50,8 +52,8 @@ async function extractAtmInfos(url, cookies) {
   const config = {
     cancelToken: source.token,
     headers: {
-      Cookie: cookies
-    }
+      Cookie: cookies,
+    },
   };
 
   try {
@@ -60,12 +62,12 @@ async function extractAtmInfos(url, cookies) {
 
     return {
       baseURL: res.config.url.split('/admin')[0],
-      cookies: res.config.headers.Cookie
+      cookies: res.config.headers.Cookie,
     };
   } catch (e) {
     return {
       baseURL: '',
-      cookies: ''
+      cookies: '',
     };
   }
 }
