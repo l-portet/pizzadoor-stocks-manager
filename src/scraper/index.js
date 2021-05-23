@@ -32,8 +32,12 @@ class Scraper {
             // Silently skip, results will be empty
             resolve();
           };
-          setTimeout(onTimeout, TIMEOUT_MS);
-          this.fetchAtm(name, link, dashboardCookies, index).then(resolve);
+          const timeout = setTimeout(onTimeout, TIMEOUT_MS);
+
+          this.fetchAtm(name, link, dashboardCookies, index).then(() => {
+            clearTimeout(timeout);
+            resolve();
+          });
         })
       );
     }
