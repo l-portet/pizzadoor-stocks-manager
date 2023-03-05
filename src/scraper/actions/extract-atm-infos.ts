@@ -1,6 +1,6 @@
-const axios = require('axios');
-const qs = require('querystring');
-const getCookies = require('../utils/get-cookies');
+// @ts-nocheck
+import axios from 'axios';
+import { getCookies } from '../../utils/cookies';
 
 const CancelToken = axios.CancelToken;
 
@@ -16,7 +16,7 @@ const http = axios.create({
   },
 });
 
-http.interceptors.response.use(async (res) => {
+http.interceptors.response.use(async res => {
   if (res.status >= 300 && res.status < 400) {
     let redirectURL;
 
@@ -46,7 +46,7 @@ http.interceptors.response.use(async (res) => {
   return res;
 });
 
-async function extractAtmInfos(url, cookies) {
+export default async function extractAtmInfos(url, cookies) {
   const source = CancelToken.source();
   let res;
   const config = {
@@ -71,5 +71,3 @@ async function extractAtmInfos(url, cookies) {
     };
   }
 }
-
-module.exports = extractAtmInfos;

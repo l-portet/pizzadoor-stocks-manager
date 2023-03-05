@@ -1,4 +1,5 @@
-function uniformInventories(atms) {
+// @ts-nocheck
+export default function uniformInventories(atms) {
   let uniqueProps = [];
 
   for (let atm of atms) {
@@ -22,5 +23,3 @@ function uniformInventories(atms) {
 
   return atms;
 }
-
-module.exports = uniformInventories;

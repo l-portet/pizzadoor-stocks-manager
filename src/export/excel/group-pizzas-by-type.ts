@@ -1,4 +1,5 @@
-function groupPizzasByType(inventory) {
+// @ts-nocheck
+export default function groupPizzasByType(inventory) {
   let groupedInventory = {};
 
   for (let pizza of inventory) {
@@ -9,5 +10,3 @@ function groupPizzasByType(inventory) {
 
   return groupedInventory;
 }
-
-module.exports = groupPizzasByType;

@@ -1,7 +1,8 @@
-function addTotalAtms(atms) {
+// @ts-nocheck
+export default function addTotalAtms(atms) {
   let total = {
     name: 'total',
-    inventory: []
+    inventory: [],
   };
   for (let { inventory } of atms) {
     for (let pizza of inventory) {
@@ -11,9 +12,9 @@ function addTotalAtms(atms) {
         let newPizza = {
           name: pizza.name,
           stocks: {
-            ...pizza.stocks
+            ...pizza.stocks,
           },
-          type: pizza.type
+          type: pizza.type,
         };
         total.inventory.push(newPizza);
       } else {
@@ -33,5 +34,3 @@ function addTotalAtms(atms) {
 function getPizzaIndexInTotal(total, pizzaName) {
   return total.inventory.findIndex(pizza => pizza.name === pizzaName);
 }
-
-module.exports = addTotalAtms;

@@ -1,11 +1,11 @@
-const deepmerge = require('deepmerge');
-const cheerio = require('cheerio');
+// @ts-nocheck
 
-const normalize = require('./normalize');
-// actions contains all the scraping logic that manipulates the scraper
-const actions = require('./actions');
+import merge from '../utils/merge';
+import cheerio from 'cheerio';
+import normalize from './normalize';
+import * as actions from './actions';
 
-class Scraper {
+export default class Scraper {
   constructor(credentials, config) {
     this.atms = [];
     this.config = {};
@@ -20,13 +20,13 @@ class Scraper {
   async run() {
     const TIMEOUT_MS = 10 * 1000;
     const proms = [];
-    const { atms, cookies: dashboardCookies } = await this.fetchAtmsInfos();
+    const { atms, cookies: dashboardCookies } = await this.fetchAtmInfos();
 
     this.atms = atms;
 
     for (let [index, { name, link }] of this.atms.entries()) {
       proms.push(
-        new Promise((resolve) => {
+        new Promise(resolve => {
           const onTimeout = () => {
             console.error(`Error: Request timed out for ${name} (${link})`);
             // Silently skip, results will be empty
@@ -50,7 +50,7 @@ class Scraper {
     return this;
   }
 
-  async fetchAtmsInfos() {
+  async fetchAtmInfos() {
     return await actions.login(
       this.credentials.username,
       this.credentials.password
@@ -77,14 +77,12 @@ class Scraper {
   setCredentials(credentials) {
     if (!credentials) return;
 
-    this.credentials = deepmerge(this.credentials, credentials);
+    this.credentials = merge(this.credentials, credentials);
   }
 
   setConfig(config) {
     if (!config) return;
 
-    this.config = deepmerge(this.config, config);
+    this.config = merge(this.config, config);
   }
 }
-
-module.exports = Scraper;

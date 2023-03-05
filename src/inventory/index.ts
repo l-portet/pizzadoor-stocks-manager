@@ -1,4 +1,5 @@
-function manageInventories(atms, config) {
+// @ts-nocheck
+export function manageInventories(atms, config) {
   atms = atms.map(atm => getPizzasToCraft(atm, config));
   return atms;
 }
@@ -11,10 +12,10 @@ function getPizzasToCraft(atm, config) {
     fillPercentage = 100;
   }
 
-  atm.inventory = atm.inventory.map(pizza => {
+  atm.inventory = atm.inventory.map((pizza: any) => {
     return {
       ...pizza,
-      ...getPizzasToCraftInStocks(pizza.stocks, fillPercentage)
+      ...getPizzasToCraftInStocks(pizza.stocks, fillPercentage),
     };
   });
 
@@ -32,5 +33,3 @@ function getPizzasToCraftInStocks(stocks, fillPercentage) {
 
   return { stocks };
 }
-
-module.exports = manageInventories;

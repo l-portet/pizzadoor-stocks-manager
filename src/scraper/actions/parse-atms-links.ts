@@ -1,6 +1,7 @@
-const cheerio = require('cheerio');
+// @ts-nocheck
+import cheerio from 'cheerio';
 
-function parseAtmsLinks(html) {
+export default function parseAtmsLinks(html) {
   const $ = cheerio.load(html);
   const atms = [];
 
@@ -9,11 +10,9 @@ function parseAtmsLinks(html) {
       name: $(el)
         .text()
         .trim(),
-      link: $(el).attr('href')
+      link: $(el).attr('href'),
     })
   );
 
   return atms;
 }
-
-module.exports = parseAtmsLinks;

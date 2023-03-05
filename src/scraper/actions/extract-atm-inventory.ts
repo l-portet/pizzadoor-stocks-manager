@@ -1,9 +1,14 @@
-const axios = require('axios');
-const moment = require('moment');
+// @ts-nocheck
+import axios from 'axios';
+import moment from 'moment';
 
 const CancelToken = axios.CancelToken;
 
-async function extractAtmInventory(baseUrl, atmCookies, limitTimeHours) {
+export default async function extractAtmInventory(
+  baseUrl,
+  atmCookies,
+  limitTimeHours
+) {
   const source = CancelToken.source();
   let inventory = [];
   let res;
@@ -14,15 +19,15 @@ async function extractAtmInventory(baseUrl, atmCookies, limitTimeHours) {
     timeout: 15000,
     headers: {
       Cookie: atmCookies,
-      connection: 'keep-alive'
+      connection: 'keep-alive',
     },
     params: {
       page: 'magasin',
       controller: 'ajx',
       do: 'get',
       type: 'magasin_status',
-      date
-    }
+      date,
+    },
   };
 
   try {
@@ -39,7 +44,7 @@ async function extractAtmInventory(baseUrl, atmCookies, limitTimeHours) {
   inventory = res.data.magasin_status.map(pizzaSlot => ({
     name: pizzaSlot.nom_pizza,
     expirationDate: pizzaSlot.date_peremption,
-    filled: !!pizzaSlot.date_peremption
+    filled: !!pizzaSlot.date_peremption,
   }));
   inventory = removeShortLifetimeItems(inventory, limitTimeHours);
 
@@ -74,7 +79,7 @@ function getStocks(items) {
     if (typeof stocks[item.name] === 'undefined') {
       stocks[item.name] = {
         filled: 0,
-        total: 0
+        total: 0,
       };
     }
     let stock = stocks[item.name];
@@ -95,5 +100,3 @@ function setEmptyStocks(stocks) {
   }
   return stocks;
 }
-
-module.exports = extractAtmInventory;

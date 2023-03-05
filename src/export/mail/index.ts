@@ -1,7 +1,8 @@
-const moment = require('moment');
-const sgMail = require('@sendgrid/mail');
+// @ts-nocheck
+import * as sgMail from '@sendgrid/mail';
+import moment from 'moment';
 
-async function sendMail(
+export default async function sendMail(
   credentials,
   config,
   sender,
@@ -31,9 +32,9 @@ async function sendMail(
         filename: getFileName(),
         type:
           'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        disposition: 'attachment'
-      }
-    ]
+        disposition: 'attachment',
+      },
+    ],
   };
 
   try {
@@ -49,5 +50,3 @@ function getFileName() {
 
   return `fiche-dap-${formattedDate}.xlsx`;
 }
-
-module.exports = sendMail;

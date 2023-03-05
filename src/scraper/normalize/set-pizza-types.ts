@@ -1,5 +1,5 @@
-function setPizzaTypes(atms, pizzaTypes) {
-
+// @ts-nocheck
+export default function setPizzaTypes(atms, pizzaTypes) {
   atms = atms.map(atm => {
     let inventory = [];
 
@@ -9,7 +9,7 @@ function setPizzaTypes(atms, pizzaTypes) {
     atm.inventory = sortByPizzaName(inventory);
     // atm.inventory = groupByPizzaType(atm.inventory)
     return atm;
-  })
+  });
   return atms;
 }
 
@@ -73,5 +73,3 @@ function checkName(a, b) {
   }
   return 0;
 }
-
-module.exports = setPizzaTypes;

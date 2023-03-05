@@ -1,20 +1,64 @@
 {
   "name": "pizzadoor-stocks-manager",
-  "version": "1.0.0",
-  "description": "",
-  "main": "src",
-  "scripts": {
-    "start": "node src/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "version": "0.1.0",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "engines": {
+    "node": ">=10"
   },
-  "author": "Lucas Portet <lucasportet@gmail.com>",
-  "license": "ISC",
+  "scripts": {
+    "start": "tsdx watch",
+    "dev": "npx ts-node -O '{\"module\":\"commonjs\"}' --skipProject .local/runner.ts",
+    "build": "tsdx build",
+    "test": "tsdx test",
+    "lint": "tsdx lint",
+    "prepare": "tsdx build",
+    "size": "size-limit",
+    "analyze": "size-limit --why"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "tsdx lint"
+    }
+  },
+  "prettier": {
+    "printWidth": 80,
+    "semi": true,
+    "singleQuote": true,
+    "trailingComma": "es5"
+  },
+  "author": "Lucas Portet",
+  "module": "dist/pizzadoor-stocks-manager-ts.esm.js",
+  "size-limit": [
+    {
+      "path": "dist/pizzadoor-stocks-manager-ts.cjs.production.min.js",
+      "limit": "10 KB"
+    },
+    {
+      "path": "dist/pizzadoor-stocks-manager-ts.esm.js",
+      "limit": "10 KB"
+    }
+  ],
+  "devDependencies": {
+    "@size-limit/preset-small-lib": "^8.2.4",
+    "husky": "^8.0.3",
+    "size-limit": "^8.2.4",
+    "tsdx": "^0.14.1",
+    "tslib": "^2.5.0",
+    "typescript": "^4.9.5"
+  },
   "dependencies": {
-    "@sendgrid/mail": "^6.5.4",
-    "axios": "^0.19.2",
-    "cheerio": "^1.0.0-rc.3",
-    "deepmerge": "^4.2.2",
-    "exceljs": "^3.8.1",
-    "moment": "^2.24.0"
+    "@sendgrid/mail": "^7.7.0",
+    "axios": "^1.3.4",
+    "cheerio": "^1.0.0-rc.12",
+    "exceljs": "^4.3.0",
+    "moment": "^2.29.4",
+    "querystring": "^0.2.1",
+    "ts-deepmerge": "^6.0.2"
   }
 }

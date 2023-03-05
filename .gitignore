@@ -1,9 +1,6 @@
-node_modules
-.env
+*.log
 .DS_Store
-/*.xlsx
-/runner.js
-/config.js
-/atms.json
-/export*
-/output*
+node_modules
+dist
+.local
+.env

@@ -1,10 +1,11 @@
-const Excel = require('exceljs');
-const deepmerge = require('deepmerge');
-const { CLASSES } = require('./styles');
-const addTotalAtms = require('./add-total-atms');
-const groupPizzasByType = require('./group-pizzas-by-type');
+// @ts-nocheck
+import Excel from 'exceljs';
+import merge from '../../utils/merge';
+import { CLASSES } from './styles';
+import addTotalAtms from './add-total-atms';
+import groupPizzasByType from './group-pizzas-by-type';
 
-async function createExcel(atms) {
+export default async function createExcel(atms) {
   atms = addTotalAtms(atms);
 
   let { workbook, worksheet } = setupWorkbook(atms);
@@ -37,12 +38,12 @@ function setupWorkbook(atms) {
     columns.push({
       header: atm.name,
       key: atm.name + '-pizzaName',
-      width: 25
+      width: 25,
     });
     columns.push({
       header: '',
       key: atm.name + '-qty',
-      width: 10
+      width: 10,
     });
   }
 
@@ -117,7 +118,7 @@ function applyClassStyle(row, className) {
 
 function applyClassStyleProperties(row, classStyle) {
   for (let prop in classStyle) {
-    row[prop] = deepmerge(row[prop], classStyle[prop]);
+    row[prop] = merge(row[prop], classStyle[prop]);
   }
 }
 
@@ -127,16 +128,16 @@ function addBordersToRows(worksheet) {
 
   firstRow.eachCell(
     cell =>
-      (cell.border = deepmerge(cell.style.border, {
-        top: { style: 'medium' }
+      (cell.border = merge(cell.style.border, {
+        top: { style: 'medium' },
       }))
   );
 
   // TEMP lastRow.eachCell doesn't seem to work for the moment
   lastRow._cells.forEach(
     cell =>
-      (cell.border = deepmerge(cell.style.border, {
-        bottom: { style: 'medium' }
+      (cell.border = merge(cell.style.border, {
+        bottom: { style: 'medium' },
       }))
   );
 }
@@ -151,7 +152,7 @@ function addBordersToColumns(worksheet) {
       borderStyle = { right: { style: 'medium' } };
     }
     column.eachCell(
-      cell => (cell.style.border = deepmerge(cell.style.border, borderStyle))
+      cell => (cell.style.border = merge(cell.style.border, borderStyle))
     );
   }
 }
@@ -162,5 +163,3 @@ function setHeightToRows(worksheet) {
   firstRow.hidden = false;
   firstRow.height = 37;
 }
-
-module.exports = createExcel;
