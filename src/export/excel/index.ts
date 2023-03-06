@@ -105,14 +105,14 @@ function getTotalQtyFromCategory(category) {
 function addRowsInWorksheet(atms, worksheet, rows) {
   for (let row of rows) {
     let worksheetRow = worksheet.addRow(row);
-
     applyClassStyle(worksheetRow, row.class);
   }
 }
 
 function applyClassStyle(row, className) {
-  if (typeof CLASSES[className] === 'undefined')
+  if (typeof CLASSES[className] === 'undefined') {
     applyClassStyleProperties(row, CLASSES['default']);
+  }
   applyClassStyleProperties(row, CLASSES[className]);
 }
 
