@@ -14,7 +14,7 @@
   "scripts": {
     "start": "tsdx watch",
     "dev": "npx ts-node -O '{\"module\":\"commonjs\"}' --skipProject .local/runner.ts",
-    "build": "tsdx build",
+    "build": "tsdx build --target node",
     "test": "tsdx test",
     "lint": "tsdx lint",
     "prepare": "tsdx build",
