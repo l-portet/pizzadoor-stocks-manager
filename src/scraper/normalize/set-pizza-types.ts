@@ -41,17 +41,24 @@ function sortByPizzaName(atm) {
 }
 
 function checkType(a, b) {
-  if (a.type === 'other' && b.type !== 'other') {
+  const otherTypes = ['other', 'autre'];
+  const aType = a.type.toLowerCase();
+  const bType = b.type.toLowerCase();
+
+  if (otherTypes.includes(aType) && !otherTypes.includes(bType)) {
     return 1;
   }
-  if (a.type !== 'other' && b.type === 'other') {
+
+  if (!otherTypes.includes(aType) && otherTypes.includes(bType)) {
     return -1;
   }
+
   if (a.type < b.type) {
-    return -1;
-  }
-  if (a.type > b.type) {
     return 1;
+  }
+
+  if (a.type > b.type) {
+    return -1;
   }
 }
 
